@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <data name="LogWindowTitle">
+        <value>Log</value>
+    </data>
+    <data name="SetWindowTitle">
+        <value>Settings</value>
+    </data>
+    <data name="Language_Text">
+        <value>Language</value>
+    </data>
+    <data name="Audio_Text">
+        <value>Audio</value>
+    </data>
+    <data name="Audio_Notification_Text">
+        <value>Audio Notification</value>
+    </data>
+    <data name="Message_Title">
+        <value>Message:</value>
+    </data>
+    <data name="Program_Title">
+        <value>Star Trek Online Status Checker</value>
+    </data>
+    <data name="Settings_Title">
+        <value>Settings</value>
+    </data>
+    <data name="Log_Title">
+        <value>Log</value>
+    </data>
+    <data name="ServerStatus_Title">
+        <value>Server Status: Unknown</value>
+    </data>
+    <data name="MusicButton">
+        <value>Select Music</value>
+    </data>
+</root>

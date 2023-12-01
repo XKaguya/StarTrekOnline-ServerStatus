@@ -1,0 +1,8 @@
+﻿<Window x:Class="StarTrekOnline_ServerStatus.LogWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="LogWindow" Height="340" Width="824">
+    <Grid>
+        <RichTextBox x:Name="LogRichTextBox" VerticalScrollBarVisibility="Auto" IsReadOnly="True" Background="DarkCyan"/>
+    </Grid>
+</Window>

@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <data name="LogWindowTitle">
+        <value>日志</value>
+    </data>
+    <data name="SetWindowTitle">
+        <value>设置</value>
+    </data>
+    <data name="Language_Text">
+        <value>语言</value>
+    </data>
+    <data name="Audio_Text">
+        <value>音频</value>
+    </data>
+    <data name="Audio_Notification_Text">
+        <value>音频提示</value>
+    </data>
+    <data name="Message_Title">
+        <value>最近消息:</value>
+    </data>
+    <data name="Program_Title">
+        <value>星际迷航：OL</value>
+    </data>
+    <data name="Settings_Title">
+        <value>设置</value>
+    </data>
+    <data name="Log_Title">
+        <value>日志</value>
+    </data>
+    <data name="ServerStatus_Title">
+        <value>服务器状态: 未知</value>
+    </data>
+    <data name="MusicButton">
+        <value>选择音频</value>
+    </data>
+</root>

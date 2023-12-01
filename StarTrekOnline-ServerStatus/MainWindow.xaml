@@ -1,0 +1,83 @@
+﻿<Window x:Class="StarTrekOnline_ServerStatus.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Star Trek Online Status Checker" Height="460" Width="1020">
+    <Grid>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Text="Star Trek Online" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,10,0,0" FontSize="24"/>
+            
+            <TextBlock x:Name="ServerStatus" Text="Server Status: Unknown" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="3,0,0,300"/>
+            <TextBlock x:Name="Message_Title" Text="Messages: " HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="3,0,0,270"/>
+            <TextBlock x:Name="MaintenanceInfo" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="3,0,0,250"/>
+            <TextBlock x:Name="Log_Title" Text="Log" MouseLeftButtonDown="OnLogClick" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="3,0,0,100"/>
+            <TextBlock x:Name="Settings_Title" Text="Settings" MouseLeftButtonDown="OnSetClick" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="3,0,0,50"/>
+            <TextBlock Text="Reload" MouseLeftButtonDown="OnReloadClick" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="3,0,0,0"/>
+        </Grid>
+        
+        <Grid HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,10,10">
+            <Grid x:Name="NewsGrid">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+           <StackPanel Grid.Row="0" Grid.Column="0" Margin="5">
+                <Image Source="path_to_your_image_1.jpg" Width="100" Height="100" MouseLeftButtonDown="OnNewsImageClick"/>
+                <TextBlock Text="News Title 1" TextWrapping="Wrap" HorizontalAlignment="Center" MouseLeftButtonDown="OnNewsTitleClick"/>
+            </StackPanel>
+                
+            <StackPanel Grid.Row="0" Grid.Column="1" Margin="5">
+                <Image Source="path_to_your_image_2.jpg" Width="100" Height="100" MouseLeftButtonDown="OnNewsImageClick"/>
+                <TextBlock Text="News Title 2" TextWrapping="Wrap" HorizontalAlignment="Center" MouseLeftButtonDown="OnNewsTitleClick"/>
+            </StackPanel>
+            
+            <StackPanel Grid.Row="0" Grid.Column="2" Margin="5">
+                <Image Source="path_to_your_image_3.jpg" Width="100" Height="100" MouseLeftButtonDown="OnNewsImageClick"/>
+                <TextBlock Text="News Title 3" TextWrapping="Wrap" HorizontalAlignment="Center" MouseLeftButtonDown="OnNewsTitleClick"/>
+            </StackPanel>
+            
+            <StackPanel Grid.Row="1" Grid.Column="0" Margin="5">
+                <Image Source="path_to_your_image_1.jpg" Width="100" Height="100" MouseLeftButtonDown="OnNewsImageClick"/>
+                <TextBlock Text="News Title 1" TextWrapping="Wrap" HorizontalAlignment="Center" MouseLeftButtonDown="OnNewsTitleClick"/>
+            </StackPanel>
+            
+            <StackPanel Grid.Row="1" Grid.Column="1" Margin="5">
+                <Image Source="path_to_your_image_2.jpg" Width="100" Height="100" MouseLeftButtonDown="OnNewsImageClick"/>
+                <TextBlock Text="News Title 2" TextWrapping="Wrap" HorizontalAlignment="Center" MouseLeftButtonDown="OnNewsTitleClick"/>
+            </StackPanel>
+            
+            <StackPanel Grid.Row="1" Grid.Column="2" Margin="5">
+                <Image Source="path_to_your_image_3.jpg" Width="100" Height="100" MouseLeftButtonDown="OnNewsImageClick"/>
+                <TextBlock Text="News Title 3" TextWrapping="Wrap" HorizontalAlignment="Center" MouseLeftButtonDown="OnNewsTitleClick"/>
+            </StackPanel>
+            
+            <StackPanel Grid.Row="2" Grid.Column="0" Margin="5">
+                <Image Source="path_to_your_image_1.jpg" Width="100" Height="100" MouseLeftButtonDown="OnNewsImageClick"/>
+                <TextBlock Text="News Title 1" TextWrapping="Wrap" HorizontalAlignment="Center" MouseLeftButtonDown="OnNewsTitleClick"/>
+            </StackPanel>
+            
+            <StackPanel Grid.Row="2" Grid.Column="1" Margin="5">
+                <Image Source="path_to_your_image_2.jpg" Width="100" Height="100" MouseLeftButtonDown="OnNewsImageClick"/>
+                <TextBlock Text="News Title 2" TextWrapping="Wrap" HorizontalAlignment="Center" MouseLeftButtonDown="OnNewsTitleClick"/>
+            </StackPanel>
+            
+            <StackPanel Grid.Row="2" Grid.Column="2" Margin="5">
+                <Image Source="path_to_your_image_3.jpg" Width="100" Height="100" MouseLeftButtonDown="OnNewsImageClick"/>
+                <TextBlock Text="News Title 3" TextWrapping="Wrap" HorizontalAlignment="Center" MouseLeftButtonDown="OnNewsTitleClick"/>
+            </StackPanel>
+                
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
