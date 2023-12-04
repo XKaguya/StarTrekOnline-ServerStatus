@@ -7,7 +7,7 @@ A tool for check Star Trek Online game's server status
 Recent events, maintenance info, server status and etc.
 
 # How to use:
-1. You should regist a Google Calendar API at [Google API](https://console.cloud.google.com/apis/credentials).
+1. You should register a Google Calendar API at [Google API](https://console.cloud.google.com/apis/credentials).
 
 2. After that downlaod the credentials json file. And put that near the exe file. Like this:
 
