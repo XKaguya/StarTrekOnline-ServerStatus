@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
+using StarTrekOnline_ServerStatus.Utils.API;
 
 namespace StarTrekOnline_ServerStatus
 {
@@ -65,7 +66,9 @@ namespace StarTrekOnline_ServerStatus
             }
             catch (HttpRequestException e)
             {
-                Console.WriteLine($"Request error: {e.Message}");
+                GetNewsContents();
+                Logger.Error($"Request error: {e.Message}");
+                throw;
             }
 
             return newsContents;

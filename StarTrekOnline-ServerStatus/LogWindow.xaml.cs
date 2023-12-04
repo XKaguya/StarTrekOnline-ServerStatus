@@ -1,9 +1,6 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Media;
 using StarTrekOnline_ServerStatus.Utils.API;
 
 namespace StarTrekOnline_ServerStatus
@@ -41,5 +38,4 @@ namespace StarTrekOnline_ServerStatus
             logRichTextBox = LogRichTextBox;
         }
     }
-
 }

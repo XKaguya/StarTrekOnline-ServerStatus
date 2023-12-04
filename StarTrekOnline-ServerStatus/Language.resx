@@ -28,9 +28,42 @@
         <value>Log</value>
     </data>
     <data name="ServerStatus_Title">
-        <value>Server Status: Unknown</value>
+        <value>Server Status: </value>
     </data>
     <data name="MusicButton">
-        <value>Select Music</value>
+        <value>Select Music</value>	
+    </data>
+    <data name="Recent_Events_Title">
+        <value>Recent Events:</value>
+    </data>
+    <data name="Message_Content">
+        <value>The event will start after </value>
+    </data>
+    <data name="No_Message">
+        <value>There's no event currently.</value>
+    </data>
+    <data name="Maintenance_Ended">
+        <value>The maintenance has eneded.</value>
+    </data>
+    <data name="days">
+        <value>days</value>
+    </data>
+    <data name="hours">
+        <value>hours</value>
+    </data>
+    <data name="minutes">
+        <value>minutes</value>
+    </data>
+    <data name="seconds">
+        <value>seconds</value>
+    </data>
+    <data name="ServerStatus_Default">
+        <value>Unknown</value>
+    </data>
+    <data name="ServerStatus_Offline">
+        <value>Offline</value>
+    </data>
+    <data name="ServerStatus_Online">
+        <value>Online</value>
     </data>
 </root>

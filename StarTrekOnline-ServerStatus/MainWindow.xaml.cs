@@ -17,9 +17,13 @@ namespace StarTrekOnline_ServerStatus
     public partial class MainWindow : Window
     {
         static LogWindow logWindow = LogWindow.Instance;
+
         static SetWindow setWindow = SetWindow.Instance;
+
         private DispatcherTimer timer;
+
         private bool isPlayed_Start { get; set; }
+
         private bool isPlayed_End { get; set; }
         
         private int playedTime { get; set; }
@@ -30,14 +34,29 @@ namespace StarTrekOnline_ServerStatus
             logWindow.Hide();
             setWindow.Hide();
             
+            Init();
+        }
+
+        public void Init()
+        {
+            Logger.SetLogLevel("Debug");
             CheckServer();
             UpdateNews();
+            GetRecentNews();
             
             timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromSeconds(1);
             timer.Tick += Timer_Tick;
             timer.Start();
             setWindow.isInitialized = true;
+        }
+
+        public async void GetRecentNews()
+        {
+            ICalendar calendar = new Calendar();
+            var message = await calendar.GetUpcomingEvents();
+
+            API.ChangeTextBlockContent(Recent_Events_Info, message);
         }
         
         private async void OnNewsImageClick(object sender, MouseButtonEventArgs ev)
@@ -108,8 +127,10 @@ namespace StarTrekOnline_ServerStatus
         
         private void OnReloadClick(object sender, MouseButtonEventArgs ev)
         {
+            Logger.Log("Reloading...");
             CheckServer();
             UpdateNews();
+            Logger.Log("Reload complete.");
         }
         
         private void Timer_Tick(object sender, EventArgs e)
@@ -184,23 +205,6 @@ namespace StarTrekOnline_ServerStatus
                 Logger.Log("All news has been successfully loaded.");
             }
         }
-        
-        private void UpdateMaintenanceInfo(string info)
-        {
-            MaintenanceInfo.Text = info;
-        }
-        
-        private void UpdateServerStatus(string status)
-        {
-            if (LanguageManager.CurrentLanguage() == "zh-CN")
-            {
-                ServerStatus.Text = $"服务器状态: {status}";
-            }
-            else if (LanguageManager.CurrentLanguage() == "en-US")
-            {
-                ServerStatus.Text = $"Server Status: {status}";
-            }
-        }
 
         private void PlayAudioNot_Start()
         {
@@ -208,13 +212,14 @@ namespace StarTrekOnline_ServerStatus
             {
                 isPlayed_Start = true;
                 Logger.Debug($"isPlayed_Start: {isPlayed_Start}");
-                if (Notification.PlayAudioNotification())
+                if (API.PlayAudioNotification(setWindow.selectedFileName).Result)
                 {
                     Logger.Log("Start playing audio.");
                 }
                 else
                 {
                     isPlayed_Start = false;
+                    Logger.Error("Audio play failed.");
                 }
             }
         }
@@ -227,7 +232,7 @@ namespace StarTrekOnline_ServerStatus
                 {
                     isPlayed_End = true;
                     Logger.Debug($"isPlayed_Start: {isPlayed_Start}");
-                    if (Notification.PlayAudioNotification())
+                    if (API.PlayAudioNotification(setWindow.selectedFileName).Result)
                     {
                         Logger.Log("Start playing audio.");
                     }
@@ -236,7 +241,7 @@ namespace StarTrekOnline_ServerStatus
                         isPlayed_End = false;
                         playedTime = 0;
                     }
-                    Logger.Log("Start playing audio.");
+                    Logger.Error("Audio play failed.");
                 }
             }
         }
@@ -244,68 +249,35 @@ namespace StarTrekOnline_ServerStatus
         private async Task CheckServer()
         {
             IServerStatus serverStatus = new ServerStatus();
-    
-            (int statusCode, int days, int hours, int minutes, int seconds) = await serverStatus.CheckServer(setWindow.Debug_Mode);
+            
+            (API.StatusCode, API.days, API.hours, API.minutes, API.seconds) = await serverStatus.CheckServer(setWindow.Debug_Mode);
 
-            if (LanguageManager.CurrentLanguage() == "en-US")
+            switch (API.StatusCode)
             {
-                switch (statusCode)
-                {
-                    case 0:
-                        UpdateServerStatus("Offline");
-                        UpdateMaintenanceInfo($"The event is currently ongoing and will end in {days} days, {hours} hours, {minutes} minutes, and {seconds} seconds.");
-                        PlayAudioNot_Start();
-                        isPlayed_End = false;
-                        playedTime = 0;
-                        break;
-                    case 1:
-                        UpdateServerStatus("Online");
-                        UpdateMaintenanceInfo($"The event will start in {days} days, {hours} hours, {minutes} minutes, and {seconds} seconds.");
-                        break;
-                    case 2:
-                        UpdateServerStatus("Online");
-                        UpdateMaintenanceInfo("The event has ended.");
-                        PlayAudioNot_End();
-                        isPlayed_Start = false;
-                        playedTime++;
-                        break;
-                    case 3:
-                        UpdateServerStatus("Online");
-                        UpdateMaintenanceInfo("There's no events currently.");
-                        break;
-                    default:
-                        break;
-                }
-            }
-            else if (LanguageManager.CurrentLanguage() == "zh-CN")
-            {
-                switch (statusCode)
-                {
-                    case 0:
-                        UpdateServerStatus("离线");
-                        UpdateMaintenanceInfo($"服务器正在维护，预计 {days} 天 {hours} 小时 {minutes} 分钟 {seconds} 秒后结束维护。");
-                        PlayAudioNot_Start();
-                        isPlayed_End = false;
-                        playedTime = 0;
-                        break;
-                    case 1:
-                        UpdateServerStatus("在线");
-                        UpdateMaintenanceInfo($"服务器将在 {days} 天 {hours} 小时 {minutes} 分钟 {seconds} 秒后开始维护。");
-                        break;
-                    case 2:
-                        UpdateServerStatus("在线");
-                        UpdateMaintenanceInfo("服务器维护已结束。");
-                        PlayAudioNot_End();
-                        isPlayed_Start = false;
-                        playedTime++;
-                        break;
-                    case 3:
-                        UpdateServerStatus("在线");
-                        UpdateMaintenanceInfo("目前没有任何事件。");
-                        break;
-                    default:
-                        break;
-                }
+                case 0:
+                    API.UpdateServerStatus();
+                    API.UpdateMaintenanceInfo(1);
+                    PlayAudioNot_Start();
+                    isPlayed_End = false;
+                    playedTime = 0;
+                    break;
+                case 1:
+                    API.UpdateServerStatus();
+                    API.UpdateMaintenanceInfo(1);
+                    break;
+                case 2:
+                    API.UpdateServerStatus();
+                    API.UpdateMaintenanceInfo(3);
+                    PlayAudioNot_End();
+                    isPlayed_Start = false;
+                    playedTime++;
+                    break;
+                case 3:
+                    API.UpdateServerStatus();
+                    API.UpdateMaintenanceInfo(2);
+                    break;
+                default:
+                    break;
             }
         }
     }

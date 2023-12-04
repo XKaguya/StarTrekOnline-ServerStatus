@@ -21,8 +21,7 @@ namespace StarTrekOnline_ServerStatus.Utils.API
         public static void SetLanguage(string language)
         {
             string resourceName = "StarTrekOnline_ServerStatus.Language";
-
-            // 根据 language 参数设置不同的资源文件名称
+            
             if (language == "en-US")
             {
                 resourceName = "StarTrekOnline_ServerStatus.Language";
@@ -65,20 +64,23 @@ namespace StarTrekOnline_ServerStatus.Utils.API
         public static void SwitchLanguage(string language)
         {
             Logger.Log(LanguageManager.CurrentLanguage());
-            
-            logWindow.Title = ((LanguageManager.GetLocalizedString("LogWindowTitle")));
-            
-            setWindow.Title = ((LanguageManager.GetLocalizedString("SetWindowTitle")));
-            setWindow.LanguageText.Text = ((LanguageManager.GetLocalizedString("Language_Text")));
-            setWindow.Audio_Text.Text = ((LanguageManager.GetLocalizedString("Audio_Text")));
-            setWindow.MusicButton.Content = ((LanguageManager.GetLocalizedString("MusicButton")));
-            setWindow.Audio_Notification_Text.Text = ((LanguageManager.GetLocalizedString("Audio_Notification_Text")));
 
-            mainWindow.Title = ((LanguageManager.GetLocalizedString("Program_Title")));
-            mainWindow.Message_Title.Text = ((LanguageManager.GetLocalizedString("Message_Title")));
-            mainWindow.Log_Title.Text = ((LanguageManager.GetLocalizedString("Log_Title")));
-            mainWindow.Settings_Title.Text = ((LanguageManager.GetLocalizedString("Settings_Title")));
-            mainWindow.ServerStatus.Text = ((LanguageManager.GetLocalizedString("ServerStatus_Title")));
+            API.ChangeTextBlockContent(mainWindow.ServerStatus, LanguageManager.GetLocalizedString("ServerStatus_Title") + LanguageManager.GetLocalizedString("ServerStatus_Default"));
+            API.ChangeTextBlockContent(mainWindow.MaintenanceInfo, LanguageManager.GetLocalizedString("Message_Content") + 0 + LanguageManager.GetLocalizedString("days") + 0 + LanguageManager.GetLocalizedString("hours") + 0 + LanguageManager.GetLocalizedString("minutes") + 0 + LanguageManager.GetLocalizedString("seconds "));    
+
+            API.ChangeWindowTitle(mainWindow, LanguageManager.GetLocalizedString("Program_Title"));
+            API.ChangeWindowTitle(logWindow, LanguageManager.GetLocalizedString("LogWindowTitle"));
+            API.ChangeWindowTitle(setWindow, LanguageManager.GetLocalizedString("SetWindowTitle"));
+            API.ChangeTextBlockContent(mainWindow.Message_Title, LanguageManager.GetLocalizedString("Message_Title"));
+            API.ChangeTextBlockContent(mainWindow.Log_Title, LanguageManager.GetLocalizedString("Log_Title"));
+            API.ChangeTextBlockContent(mainWindow.Recent_Events, LanguageManager.GetLocalizedString("Recent_Events_Title"));
+            API.ChangeTextBlockContent(mainWindow.Settings_Title, LanguageManager.GetLocalizedString("Settings_Title"));
+
+            API.ChangeTextBlockContent(setWindow.LanguageText, LanguageManager.GetLocalizedString("Language_Text"));
+            API.ChangeTextBlockContent(setWindow.Audio_Text, LanguageManager.GetLocalizedString("Audio_Text"));
+            API.ChangeTextBlockContent(setWindow.Audio_Notification_Text, LanguageManager.GetLocalizedString("Audio_Notification_Text"));
+
+            API.ChangeButtonContent(setWindow.MusicButton, LanguageManager.GetLocalizedString("MusicButton"));
         }
     }
 }

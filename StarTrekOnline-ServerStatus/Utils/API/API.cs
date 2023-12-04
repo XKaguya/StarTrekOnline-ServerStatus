@@ -1,13 +1,25 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Media;
+using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace StarTrekOnline_ServerStatus.Utils.API
 {
     public static class API
     {
+        private static MainWindow mainWindow = App.CurrentMainWindow;
+
+        public static int StatusCode { get; set; } = 0;
+
+        public static int days { get; set; }
+
+        public static int hours { get; set; }
+
+        public static int minutes { get; set; }
+
+        public static int seconds { get; set; }
+
         public static T FindParent<T>(DependencyObject child) where T : DependencyObject
         {
             DependencyObject parentObject = VisualTreeHelper.GetParent(child);
@@ -26,92 +38,85 @@ namespace StarTrekOnline_ServerStatus.Utils.API
                 return FindParent<T>(parentObject);
             }
         }
-    }
 
-    public static class Logger
-    {
-        private static RichTextBox logRichTextBox;
-
-        static Logger()
+        public static async Task<bool> PlayAudioNotification(string path)
         {
-            logRichTextBox = new RichTextBox();
-        }
-
-        public static void SetLogTarget(RichTextBox richTextBox)
-        {
-            logRichTextBox = richTextBox;
-        }
-
-        public static void Log(string message)
-        {
-            if (logRichTextBox != null)
+            INotification notification = new Notification();
+            if (path != null)
             {
-                string logMessage = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} [INFO]: {message}";
-                LogAddLine(logMessage, Brushes.Aquamarine);
+                bool flag = await notification.AudioNotification(path);
+                return flag;
             }
+            return false;
         }
 
-        public static void Error(string message)
-        {
-            if (logRichTextBox != null)
-            {
-                string logMessage = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} [ERROR]: {message}";
-                LogAddLine(logMessage, Brushes.Red);
-            }
-        }
-        
-        public static void Debug(string message)
-        {
-            SetWindow setWindow = SetWindow.Instance;
-            if (logRichTextBox != null)
-            {
-                if (setWindow.Debug_Mode)
-                {
-                    string logMessage = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} [DEBUG]: {message}";
-                    LogAddLine(logMessage, Brushes.White);
-                }
-            }
-        }
-
-        private static void LogAddLine(string message, SolidColorBrush color)
-        {
-            Paragraph paragraph = new Paragraph(new Run(message));
-            paragraph.Foreground = color;
-
-            logRichTextBox.Document.Blocks.Add(paragraph);
-
-            logRichTextBox.ScrollToEnd();
-        }
-    }
-
-    public static class Notification
-    {
-        static SetWindow setWindow = SetWindow.Instance;
-        private static MediaPlayer player = new MediaPlayer();
-
-        public static bool PlayAudioNotification()
+        public static bool ChangeTextBlockContent(TextBlock textBlock, string content)
         {
             try
             {
-                string audioPath = setWindow.selectedFileName;
-                if (System.IO.File.Exists(audioPath))
-                {
-                    Logger.Debug($"Trying playing {audioPath} now...");
-                    player.Open(new Uri(audioPath));
-                    player.Volume = 0.1;
-                    player.Play();
-                    return true;
-                }
-                else
-                {
-                    Logger.Error("Error. No such file or directory.");
-                    return false;
-                }
+                textBlock.Text = content;
+                return true;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Logger.Error(e.Message);
-                throw;
+                Logger.Error($"{ex.Message}, {ex.StackTrace}");
+            }
+            return false;
+        }
+
+        public static bool ChangeWindowTitle(Window window, string content)
+        {
+            try
+            {
+                window.Title = content;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.Error($"{ex.Message}, {ex.StackTrace}");
+            }
+            return false;
+        }
+        
+        public static bool ChangeButtonContent(Button button, string content)
+        {
+            try
+            {
+                button.Content = content;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.Error($"{ex.Message}, {ex.StackTrace}");
+            }
+            return false;
+        }
+
+        public static void UpdateServerStatus()
+        {
+            if (StatusCode == 0)
+            {
+                ChangeTextBlockContent(mainWindow.ServerStatus, LanguageManager.GetLocalizedString("ServerStatus_Title") + LanguageManager.GetLocalizedString("ServerStatus_Offline"));
+            }
+            else
+            {
+                ChangeTextBlockContent(mainWindow.ServerStatus, LanguageManager.GetLocalizedString("ServerStatus_Title") + LanguageManager.GetLocalizedString("ServerStatus_Online"));
+            }
+        }
+
+        public static void UpdateMaintenanceInfo(int type)
+        {
+            if (type == 1)
+            {
+                ChangeTextBlockContent(mainWindow.MaintenanceInfo, LanguageManager.GetLocalizedString("Message_Content") + days + "days" + hours + "hours" + minutes + "minutes" + seconds + "seconds.");
+            }
+            else if (type == 2)
+            {
+                ChangeTextBlockContent(mainWindow.MaintenanceInfo, LanguageManager.GetLocalizedString("No_Message"));
+            }
+            else
+            {
+                ChangeTextBlockContent(mainWindow.MaintenanceInfo, LanguageManager.GetLocalizedString("Maintenance_Ended"));
             }
         }
     }

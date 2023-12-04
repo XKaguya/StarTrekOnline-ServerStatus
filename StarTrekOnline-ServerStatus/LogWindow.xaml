@@ -3,6 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="LogWindow" Height="340" Width="824">
     <Grid>
-        <RichTextBox x:Name="LogRichTextBox" VerticalScrollBarVisibility="Auto" IsReadOnly="True" Background="DarkCyan"/>
+        <RichTextBox x:Name="LogRichTextBox" VerticalScrollBarVisibility="Auto" IsReadOnly="True" Background="White"/>
     </Grid>
 </Window>

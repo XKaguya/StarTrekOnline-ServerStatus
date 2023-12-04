@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using StarTrekOnline_ServerStatus.Utils.API;
 
 namespace StarTrekOnline_ServerStatus
 {
@@ -15,6 +16,7 @@ namespace StarTrekOnline_ServerStatus
             {
                 if ((value != "Online" && value != "Offline") || (value != "在线" && value != "离线"))
                 {
+                    Logger.Error("ServerStatus must be either 'Online' or 'Offline'.\"");
                     throw new ArgumentException("ServerStatus must be either 'Online' or 'Offline'.");
                 }
 

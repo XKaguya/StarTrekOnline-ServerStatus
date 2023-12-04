@@ -28,9 +28,42 @@
         <value>日志</value>
     </data>
     <data name="ServerStatus_Title">
-        <value>服务器状态: 未知</value>
+        <value>服务器状态: </value>
     </data>
     <data name="MusicButton">
         <value>选择音频</value>
+    </data>
+    <data name="Recent_Events_Title">
+        <value>最近活动:</value>
+    </data>
+    <data name="Message_Content">
+        <value>维护将在以下时间后开始: </value>
+    </data>
+    <data name="No_Message">
+        <value>近期没有任何事件。</value>
+    </data>
+    <data name="Maintenance_Ended">
+        <value>维护已结束。</value>
+    </data>
+    <data name="days">
+        <value>天</value>
+    </data>
+    <data name="hours">
+        <value>小时</value>
+    </data>
+    <data name="minutes">
+        <value>分钟</value>
+    </data>
+    <data name="seconds">
+        <value>秒</value>
+    </data>
+    <data name="ServerStatus_Default">
+        <value>未知</value>
+    </data>
+    <data name="ServerStatus_Offline">
+        <value>离线</value>
+    </data>
+    <data name="ServerStatus_Online">
+        <value>在线</value>
     </data>
 </root>

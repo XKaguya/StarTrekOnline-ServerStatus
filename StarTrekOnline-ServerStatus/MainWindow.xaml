@@ -1,7 +1,7 @@
 ﻿<Window x:Class="StarTrekOnline_ServerStatus.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Star Trek Online Status Checker" Height="460" Width="1020">
+        Title="Star Trek Online Status Checker" Height="450" Width="1040">
     <Grid>
         <Grid>
             <Grid.ColumnDefinitions>
@@ -14,6 +14,8 @@
             <TextBlock x:Name="ServerStatus" Text="Server Status: Unknown" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="3,0,0,300"/>
             <TextBlock x:Name="Message_Title" Text="Messages: " HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="3,0,0,270"/>
             <TextBlock x:Name="MaintenanceInfo" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="3,0,0,250"/>
+            <TextBlock x:Name="Recent_Events" Text="Recent Events: " HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="3,0,0,200"/>
+            <TextBlock x:Name="Recent_Events_Info" Text="" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="3,0,0,150"/>
             <TextBlock x:Name="Log_Title" Text="Log" MouseLeftButtonDown="OnLogClick" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="3,0,0,100"/>
             <TextBlock x:Name="Settings_Title" Text="Settings" MouseLeftButtonDown="OnSetClick" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="3,0,0,50"/>
             <TextBlock Text="Reload" MouseLeftButtonDown="OnReloadClick" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="3,0,0,0"/>
