@@ -66,8 +66,8 @@ namespace StarTrekOnline_ServerStatus
             }
             catch (HttpRequestException e)
             {
-                GetNewsContents();
                 Logger.Error($"Request error: {e.Message}");
+                GetNewsContents();
                 throw;
             }
 

@@ -30,8 +30,7 @@ namespace StarTrekOnline_ServerStatus
 
                 UserCredential credential;
 
-                using (var stream = new FileStream("client_secret.json", FileMode.Open,
-                           FileAccess.Read))
+                using (var stream = new FileStream("client_secret.json", FileMode.Open, FileAccess.Read))
                 {
                     credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
                         GoogleClientSecrets.Load(stream).Secrets,
