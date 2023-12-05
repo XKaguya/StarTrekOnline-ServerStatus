@@ -39,6 +39,9 @@
     <data name="Message_Content">
         <value>维护将在以下时间后开始: </value>
     </data>
+    <data name="Message_Content_Ongoing">
+        <value>维护已开始，将在以下时间后结束： </value>
+    </data>
     <data name="No_Message">
         <value>近期没有任何事件。</value>
     </data>
@@ -65,5 +68,11 @@
     </data>
     <data name="ServerStatus_Online">
         <value>在线</value>
+    </data>
+    <data name="Reload">
+        <value>重载</value>
+    </data>
+    <data name="RecentNews">
+        <value>最近新闻</value>
     </data>
 </root>

@@ -66,15 +66,17 @@ namespace StarTrekOnline_ServerStatus.Utils.API
             Logger.Log(LanguageManager.CurrentLanguage());
 
             API.ChangeTextBlockContent(mainWindow.ServerStatus, LanguageManager.GetLocalizedString("ServerStatus_Title") + LanguageManager.GetLocalizedString("ServerStatus_Default"));
-            API.ChangeTextBlockContent(mainWindow.MaintenanceInfo, LanguageManager.GetLocalizedString("Message_Content") + 0 + LanguageManager.GetLocalizedString("days") + 0 + LanguageManager.GetLocalizedString("hours") + 0 + LanguageManager.GetLocalizedString("minutes") + 0 + LanguageManager.GetLocalizedString("seconds "));    
+            API.ChangeTextBlockContent(mainWindow.MaintenanceInfo, LanguageManager.GetLocalizedString("Message_Content") + 0 + LanguageManager.GetLocalizedString("days") + 0 + LanguageManager.GetLocalizedString("hours") + 0 + LanguageManager.GetLocalizedString("minutes") + 0 + LanguageManager.GetLocalizedString("seconds"));    
 
             API.ChangeWindowTitle(mainWindow, LanguageManager.GetLocalizedString("Program_Title"));
             API.ChangeWindowTitle(logWindow, LanguageManager.GetLocalizedString("LogWindowTitle"));
             API.ChangeWindowTitle(setWindow, LanguageManager.GetLocalizedString("SetWindowTitle"));
             API.ChangeTextBlockContent(mainWindow.Message_Title, LanguageManager.GetLocalizedString("Message_Title"));
-            API.ChangeTextBlockContent(mainWindow.Log_Title, LanguageManager.GetLocalizedString("Log_Title"));
+            API.ChangeButtonContent(mainWindow.Log, LanguageManager.GetLocalizedString("Log_Title"));
             API.ChangeTextBlockContent(mainWindow.Recent_Events, LanguageManager.GetLocalizedString("Recent_Events_Title"));
-            API.ChangeTextBlockContent(mainWindow.Settings_Title, LanguageManager.GetLocalizedString("Settings_Title"));
+            API.ChangeButtonContent(mainWindow.Settings, LanguageManager.GetLocalizedString("Settings_Title"));
+            API.ChangeButtonContent(mainWindow.Reload, LanguageManager.GetLocalizedString("Reload"));
+            API.ChangeTextBlockContent(mainWindow.RecentNews, LanguageManager.GetLocalizedString("RecentNews"));
 
             API.ChangeTextBlockContent(setWindow.LanguageText, LanguageManager.GetLocalizedString("Language_Text"));
             API.ChangeTextBlockContent(setWindow.Audio_Text, LanguageManager.GetLocalizedString("Audio_Text"));

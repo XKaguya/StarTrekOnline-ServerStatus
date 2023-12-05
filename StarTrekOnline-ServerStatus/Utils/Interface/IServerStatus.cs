@@ -25,8 +25,7 @@ namespace StarTrekOnline_ServerStatus
                     {
                         var times = await ExtractTimes(message);
                         var (startEventTime, endEventTime) = await TimeUntilEvent(times);
-
-                        DateTime currentTime = DateTime.UtcNow.AddHours(8);
+                        DateTime currentTime = DateTime.UtcNow;
 
                         if (startEventTime <= currentTime && currentTime <= endEventTime)
                         {

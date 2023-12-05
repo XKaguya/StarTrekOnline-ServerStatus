@@ -6,9 +6,10 @@
         xmlns:local="clr-namespace:StarTrekOnline_ServerStatus"
         mc:Ignorable="d"
         Title="SetWindow" Height="460" Width="790">
-    <Grid>
+    <Border Background="#FFF" CornerRadius="10">
+        <Grid>
         <TextBlock x:Name="LanguageText" Text="Language" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="3,0,0,400"/>
-        <ComboBox x:Name="LanguageComboBox" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="120" Margin="65,0,0,395" SelectedIndex="0" SelectionChanged="LanguageChanged">
+        <ComboBox x:Name="LanguageComboBox" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="120" Margin="65,0,0,390" SelectedIndex="0" SelectionChanged="LanguageChanged">
             <ComboBoxItem Content="English"/>
             <ComboBoxItem Content="Chinese"/>
         </ComboBox>
@@ -17,8 +18,9 @@
         <CheckBox x:Name="CheckBox_Audio" Content="" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="120,0,0,350"/>
         
         <TextBlock x:Name="Audio_Text" Text="Audio" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="3,0,0,300"/>
-        <Button x:Name="MusicButton" Content="Select Music" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="120" Margin="65,0,0,300" Click="OnMusicClick"/>
+        <Button x:Name="MusicButton" Content="Select Music" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="100" Margin="65,0,0,300" Click="OnMusicClick"/>
         
         <CheckBox x:Name="Debug" Content="Debug Mode" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="3,0,0,200"/>
     </Grid>
+    </Border>
 </Window>

@@ -39,6 +39,9 @@
     <data name="Message_Content">
         <value>The event will start after </value>
     </data>
+    <data name="Message_Content_Ongoing">
+        <value>The event is current ongoing and will end at </value>
+    </data>
     <data name="No_Message">
         <value>There's no event currently.</value>
     </data>
@@ -65,5 +68,11 @@
     </data>
     <data name="ServerStatus_Online">
         <value>Online</value>
+    </data>
+    <data name="Reload">
+        <value>Reload</value>
+    </data>
+    <data name="RecentNews">
+        <value>Recent News</value>
     </data>
 </root>

@@ -1,13 +1,17 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using HandyControl.Controls;
+using HandyControl.Data;
 using StarTrekOnline_ServerStatus.Utils.API;
+using Window = System.Windows.Window;
 
 namespace StarTrekOnline_ServerStatus
 {
@@ -59,43 +63,7 @@ namespace StarTrekOnline_ServerStatus
             API.ChangeTextBlockContent(Recent_Events_Info, message);
         }
         
-        private async void OnNewsImageClick(object sender, MouseButtonEventArgs ev)
-        {
-            if (sender is Image image)
-            {
-                StackPanel stackPanel = API.FindParent<StackPanel>(image);
-                if (stackPanel != null)
-                {
-                    string newsUrl = await GetNewsUrlFromStackPanel(stackPanel);
-                    Logger.Log($"Trying open {newsUrl}");
-                    OpenLinkInBrowser(newsUrl);
-                }
-                else
-                {
-                    Logger.Error($"{stackPanel} is null !");
-                }
-            }
-        }
-
-        private async void OnNewsTitleClick(object sender, MouseButtonEventArgs ev)
-        {
-            if (sender is TextBlock textBlock)
-            {
-                StackPanel stackPanel = API.FindParent<StackPanel>(textBlock);
-                if (stackPanel != null)
-                {
-                    string newsUrl = await GetNewsUrlFromStackPanel(stackPanel);
-                    Logger.Log($"Trying open {newsUrl}");
-                    OpenLinkInBrowser(newsUrl);
-                }
-                else
-                {
-                    Logger.Error($"{stackPanel} is null !");
-                }
-            }
-        }
-        
-        private void OnLogClick(object sender, MouseButtonEventArgs ev)
+        private void OnLogClick(object sender, RoutedEventArgs ev)
         {
             if (logWindow.IsVisible)
             {
@@ -113,7 +81,7 @@ namespace StarTrekOnline_ServerStatus
             Application.Current.Shutdown();
         }
         
-        private void OnSetClick(object sender, MouseButtonEventArgs ev)
+        private void OnSetClick(object sender, RoutedEventArgs ev)
         {
             if (setWindow.IsVisible)
             {
@@ -125,11 +93,11 @@ namespace StarTrekOnline_ServerStatus
             }
         }
         
-        private void OnReloadClick(object sender, MouseButtonEventArgs ev)
+        private async void OnReloadClick(object sender, RoutedEventArgs ev)
         {
             Logger.Log("Reloading...");
-            CheckServer();
-            UpdateNews();
+            await CheckServer();
+            await UpdateNews();
             Logger.Log("Reload complete.");
         }
         
@@ -163,8 +131,31 @@ namespace StarTrekOnline_ServerStatus
                 System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(link) { UseShellExecute = true });
             }
         }
+        
+        private async void Card_Click(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is Card card)
+            {
+                if (card.Content is Border border)
+                {
+                    Image cardImage = border.Child as Image;
+                    StackPanel stackPanel = card.Footer as StackPanel;
+                    TextBlock textBlock = stackPanel.Children.OfType<TextBlock>().FirstOrDefault();
 
-        private async void UpdateNews()
+                    if (stackPanel != null)
+                    {
+                        if (cardImage != null && textBlock != null)
+                        {
+                            string newsUrl = await GetNewsUrlFromStackPanel(stackPanel);
+                            Logger.Log($"Trying open {newsUrl}");
+                            OpenLinkInBrowser(newsUrl);
+                        }
+                    }
+                }
+            }
+        }
+
+        private async Task<bool> UpdateNews()
         {
             INewsProcessor newsProcessor = new NewsProcessor();
             var newsContents = await newsProcessor.GetNewsContents();
@@ -174,36 +165,36 @@ namespace StarTrekOnline_ServerStatus
             {
                 foreach (var child in NewsGrid.Children)
                 {
-                    if (child is StackPanel stackPanel)
+                    if (child is Card card)
                     {
-                        if (index >= newsContents.Count)
-                            return;
-
-                        Image? image = stackPanel.Children.OfType<Image>().FirstOrDefault();
-                        TextBlock? textBlock = stackPanel.Children.OfType<TextBlock>().FirstOrDefault();
-
-                        if (image != null && textBlock != null)
+                        if (card.Content is Border border)
                         {
-                            image.Source = new BitmapImage(new Uri(newsContents[index].ImageUrl, UriKind.Absolute));
-                            textBlock.Text = System.Net.WebUtility.HtmlDecode(newsContents[index].Title);
+                            Image cardImage = border.Child as Image;
+                            StackPanel stackPanel = card.Footer as StackPanel;
+                            TextBlock textBlock = stackPanel.Children.OfType<TextBlock>().FirstOrDefault();
+                        
+                            if (index >= newsContents.Count)
+                                return false;
 
-                            Logger.Log($"News {System.Net.WebUtility.HtmlDecode(newsContents[index].Title)} has been successfully loaded.");
+                            cardImage.Source = new BitmapImage(new Uri(newsContents[index].ImageUrl, UriKind.Absolute));
+                            
+                            textBlock.Text = WebUtility.HtmlDecode(newsContents[index].Title);
+                            
+                            Logger.Log($"News {WebUtility.HtmlDecode(newsContents[index].Title)} has been successfully loaded.");
                             index++;
-
+                            
                         }
                     }
                 }
+
+                return true;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                var error = $"Failed on update news. {e}";
-                Logger.Error(error);
-                throw;
+                Logger.Log($"Error updating news: {ex.Message}");
             }
-            finally
-            {
-                Logger.Log("All news has been successfully loaded.");
-            }
+
+            return false;
         }
 
         private void PlayAudioNot_Start()
@@ -254,27 +245,34 @@ namespace StarTrekOnline_ServerStatus
 
             switch (API.StatusCode)
             {
+                // Server starting / started maintenance.
                 case 0:
                     API.UpdateServerStatus();
-                    API.UpdateMaintenanceInfo(1);
+                    API.UpdateMaintenanceInfo(0);
                     PlayAudioNot_Start();
                     isPlayed_End = false;
                     playedTime = 0;
                     break;
+                
+                // Server will start maintenance.
                 case 1:
                     API.UpdateServerStatus();
                     API.UpdateMaintenanceInfo(1);
                     break;
+                
+                // Server maintenance ended.
                 case 2:
                     API.UpdateServerStatus();
-                    API.UpdateMaintenanceInfo(3);
+                    API.UpdateMaintenanceInfo(2);
                     PlayAudioNot_End();
                     isPlayed_Start = false;
                     playedTime++;
                     break;
+                
+                // Not support events.
                 case 3:
                     API.UpdateServerStatus();
-                    API.UpdateMaintenanceInfo(2);
+                    API.UpdateMaintenanceInfo(3);
                     break;
                 default:
                     break;

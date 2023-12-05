@@ -106,17 +106,25 @@ namespace StarTrekOnline_ServerStatus.Utils.API
 
         public static void UpdateMaintenanceInfo(int type)
         {
-            if (type == 1)
+            if (type == 0)
             {
-                ChangeTextBlockContent(mainWindow.MaintenanceInfo, LanguageManager.GetLocalizedString("Message_Content") + days + "days" + hours + "hours" + minutes + "minutes" + seconds + "seconds.");
+                // Maintenance Ongoing
+                ChangeTextBlockContent(mainWindow.MaintenanceInfo, LanguageManager.GetLocalizedString("Message_Content_Ongoing") + '\n' + days + " " + LanguageManager.GetLocalizedString("days") + " " + hours + " " + LanguageManager.GetLocalizedString("hours")  + " " + minutes + " " + LanguageManager.GetLocalizedString("minutes") + " " + seconds + " " + LanguageManager.GetLocalizedString("seconds"));
+            }
+            else if (type == 1)
+            {
+                // Maintenance will start
+                ChangeTextBlockContent(mainWindow.MaintenanceInfo, LanguageManager.GetLocalizedString("Message_Content") + '\n' + days + " " + LanguageManager.GetLocalizedString("days") + " " + hours + " " + LanguageManager.GetLocalizedString("hours")  + " " + minutes + " " + LanguageManager.GetLocalizedString("minutes") + " " + seconds + " " + LanguageManager.GetLocalizedString("seconds"));
             }
             else if (type == 2)
             {
-                ChangeTextBlockContent(mainWindow.MaintenanceInfo, LanguageManager.GetLocalizedString("No_Message"));
+                // Maintenance ended
+                ChangeTextBlockContent(mainWindow.MaintenanceInfo, LanguageManager.GetLocalizedString("Maintenance_Ended"));
             }
             else
             {
-                ChangeTextBlockContent(mainWindow.MaintenanceInfo, LanguageManager.GetLocalizedString("Maintenance_Ended"));
+                // etc
+                ChangeTextBlockContent(mainWindow.MaintenanceInfo, "Other events are not support at this time.");
             }
         }
     }
