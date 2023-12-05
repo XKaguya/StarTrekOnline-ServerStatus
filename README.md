@@ -2,7 +2,7 @@
 A tool for check Star Trek Online game's server status
 
 # Features:
-![image](https://github.com/XKaguya/StarTrekOnline-ServerStatus/assets/96401952/4548c5a0-427d-4b8d-a1da-b6a3d6b3c033)
+![image](https://github.com/XKaguya/StarTrekOnline-ServerStatus/assets/96401952/19a944f6-0403-404c-9a81-d78eaa28d604)
 
 Recent events, maintenance info, server status and etc.
 
