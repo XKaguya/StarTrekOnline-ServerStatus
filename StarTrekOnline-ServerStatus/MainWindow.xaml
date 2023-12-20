@@ -22,6 +22,7 @@
                 <Button x:Name="Log" Content="Log" Click="OnLogClick" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="345,0,0,4" Grid.Column="1" Height="32"/>
                 <Button x:Name="Settings"  Content="Settings" Click="OnSetClick" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="270,0,0,4" Grid.ColumnSpan="2" Height="32" Width="70"/>
                 <Button x:Name="Reload" Content="Reload" Click="OnReloadClick" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="393,0,0,4" Grid.Column="1" Height="32"/>
+                <Button x:Name="Server" Content="Server" Click="OnServerClick" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="500,0,0,4" Grid.Column="1" Height="32"/>
 
                 <TextBlock x:Name="RecentNews" Text="Recent News" FontSize="30" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="752,25,0,0" RenderTransformOrigin="0.295,0.532" Grid.ColumnSpan="2"/>
             </Grid>

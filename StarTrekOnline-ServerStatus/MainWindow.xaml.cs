@@ -9,7 +9,6 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using HandyControl.Controls;
-using HandyControl.Data;
 using StarTrekOnline_ServerStatus.Utils.API;
 using Window = System.Windows.Window;
 
@@ -99,6 +98,12 @@ namespace StarTrekOnline_ServerStatus
             await CheckServer();
             await UpdateNews();
             Logger.Log("Reload complete.");
+        }
+        
+        private async void OnServerClick(object sender, RoutedEventArgs ev)
+        {
+            var server = new NamedPipeServerHandler("STOChecker");
+            await server.StartServerAsync();
         }
         
         private void Timer_Tick(object sender, EventArgs e)

@@ -121,6 +121,11 @@ namespace StarTrekOnline_ServerStatus.Utils.API
                 // Maintenance ended
                 ChangeTextBlockContent(mainWindow.MaintenanceInfo, LanguageManager.GetLocalizedString("Maintenance_Ended"));
             }
+            else if (type == 3)
+            {
+                // No events currently
+                ChangeTextBlockContent(mainWindow.MaintenanceInfo, LanguageManager.GetLocalizedString("No_Message"));
+            }
             else
             {
                 // etc
