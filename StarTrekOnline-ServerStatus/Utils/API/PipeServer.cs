@@ -6,20 +6,20 @@ using Newtonsoft.Json;
 
 namespace StarTrekOnline_ServerStatus.Utils.API
 {
-        public class NamedPipeServerHandler
+    public class NamedPipeServerHandler
     {
-        private readonly string pipeName;
 
+        private readonly string _pipeName;
         public NamedPipeServerHandler(string pipeName)
         {
-            this.pipeName = pipeName;
+            _pipeName = pipeName;
         }
 
         public async Task StartServerAsync()
         {
             while (true)
             {
-                using (NamedPipeServerStream pipeServer = new NamedPipeServerStream(pipeName))
+                using (NamedPipeServerStream pipeServer = new NamedPipeServerStream(_pipeName))
                 {
                     Logger.Log("Waiting for connection...");
 
@@ -42,7 +42,7 @@ namespace StarTrekOnline_ServerStatus.Utils.API
             }
         }
 
-        private async Task ProcessClientMessageAsync(NamedPipeServerStream pipeServer)
+        private static async Task ProcessClientMessageAsync(PipeStream pipeServer)
         {
             byte[] buffer = new byte[256];
             int bytesRead = await pipeServer.ReadAsync(buffer, 0, buffer.Length);
@@ -53,19 +53,25 @@ namespace StarTrekOnline_ServerStatus.Utils.API
             if (receivedMessage == "sS")
             {
                 IServerStatus serverStatus = new ServerStatus();
-                (API.StatusCode, API.days, API.hours, API.minutes, API.seconds) = await serverStatus.CheckServer(false);
+                API.MaintenanceInfo maintenanceInfo = new();
+                
+                maintenanceInfo = await serverStatus.CheckServerAsync(SetWindow.Instance.Debug_Mode);
 
                 INewsProcessor newsProcessor = new NewsProcessor();
                 var newsContents = await newsProcessor.GetNewsContents();
+                
+                ICalendar calendar = new Calendar();
+                var recentNews = await calendar.GetUpcomingEvents();
 
                 var combinedData = new
                 {
-                    StatusCode = API.StatusCode,
-                    Days = API.days,
-                    Hours = API.hours,
-                    Minutes = API.minutes,
-                    Seconds = API.seconds,
-                    NewsContents = newsContents
+                    maintenanceInfo.ShardStatus,
+                    maintenanceInfo.Days,
+                    maintenanceInfo.Hours,
+                    maintenanceInfo.Minutes,
+                    maintenanceInfo.Seconds,
+                    NewsContents = newsContents,
+                    RecentNews = recentNews
                 };
 
                 string combinedJson = JsonConvert.SerializeObject(combinedData);

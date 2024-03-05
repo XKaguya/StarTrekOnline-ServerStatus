@@ -18,7 +18,7 @@
                 <TextBlock x:Name="Message_Title" FontSize="30" Text="Messages: " HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,0,0,474" RenderTransformOrigin="0.511,-19.984" Grid.ColumnSpan="2" Height="81" Width="250"/>
                 <TextBlock x:Name="MaintenanceInfo" FontSize="20" HorizontalAlignment="Left" VerticalAlignment="Top" Height="197" Grid.ColumnSpan="2" Width="753" Margin="0,210,0,0"/>
                 <TextBlock x:Name="Recent_Events" FontSize="20" Text="Recent Events: " HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,0,0,237" Grid.ColumnSpan="2" Height="45" Width="384"/>
-                <TextBlock x:Name="Recent_Events_Info" FontSize="20" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,0,0,96" Height="141" Grid.ColumnSpan="2" Width="721"/>
+                <TextBlock x:Name="Recent_Events_Info" FontSize="20" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,0,0,50" Height="200" Grid.ColumnSpan="2" Width="721"/>
                 <Button x:Name="Log" Content="Log" Click="OnLogClick" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="345,0,0,4" Grid.Column="1" Height="32"/>
                 <Button x:Name="Settings"  Content="Settings" Click="OnSetClick" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="270,0,0,4" Grid.ColumnSpan="2" Height="32" Width="70"/>
                 <Button x:Name="Reload" Content="Reload" Click="OnReloadClick" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="393,0,0,4" Grid.Column="1" Height="32"/>

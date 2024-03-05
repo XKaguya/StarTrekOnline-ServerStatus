@@ -43,7 +43,7 @@
         <value>The event is current ongoing and will end at </value>
     </data>
     <data name="No_Message">
-        <value>There's no event currently.</value>
+        <value>There's no maintenance currently.</value>
     </data>
     <data name="Maintenance_Ended">
         <value>The maintenance has eneded.</value>

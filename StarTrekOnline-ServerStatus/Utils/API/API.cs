@@ -1,44 +1,29 @@
 ﻿using System;
-using System.Windows;
-using System.Windows.Media;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace StarTrekOnline_ServerStatus.Utils.API
 {
-    public static class API
+    public class API
     {
-        private static MainWindow mainWindow = App.CurrentMainWindow;
+        private static MainWindow _mainWindow = App.CurrentMainWindow;
 
-        public static int StatusCode { get; set; } = 0;
-
-        public static int days { get; set; }
-
-        public static int hours { get; set; }
-
-        public static int minutes { get; set; }
-
-        public static int seconds { get; set; }
-
-        public static T FindParent<T>(DependencyObject child) where T : DependencyObject
+        public class MaintenanceInfo
         {
-            DependencyObject parentObject = VisualTreeHelper.GetParent(child);
+            public Enums.ShardStatus ShardStatus { get; set; }
 
-            if (parentObject == null) return null;
+            public int Days { get; set; }
 
-            T parent = parentObject as T;
-            if (parent != null)
-            {
-                Logger.Log($"Parent found. {parent}");
-                return parent;
-            }
-            else
-            {
-                Logger.Log($"Parent not found. Executing again.");
-                return FindParent<T>(parentObject);
-            }
+            public int Hours { get; set; }
+
+            public int Minutes { get; set; }
+
+            public int Seconds { get; set; }
         }
-
+        
         public static async Task<bool> PlayAudioNotification(string path)
         {
             INotification notification = new Notification();
@@ -49,7 +34,7 @@ namespace StarTrekOnline_ServerStatus.Utils.API
             }
             return false;
         }
-
+        
         public static bool ChangeTextBlockContent(TextBlock textBlock, string content)
         {
             try
@@ -63,7 +48,7 @@ namespace StarTrekOnline_ServerStatus.Utils.API
             }
             return false;
         }
-
+        
         public static bool ChangeWindowTitle(Window window, string content)
         {
             try
@@ -91,46 +76,73 @@ namespace StarTrekOnline_ServerStatus.Utils.API
             }
             return false;
         }
-
-        public static void UpdateServerStatus()
+        
+        public static void UpdateServerStatus(Enums.ShardStatus shardStatus)
         {
-            if (StatusCode == 0)
+            if (shardStatus == Enums.ShardStatus.Maintenance)
             {
-                ChangeTextBlockContent(mainWindow.ServerStatus, LanguageManager.GetLocalizedString("ServerStatus_Title") + LanguageManager.GetLocalizedString("ServerStatus_Offline"));
+                ChangeTextBlockContent(_mainWindow.ServerStatus, LanguageManager.GetLocalizedString("ServerStatus_Title") + LanguageManager.GetLocalizedString("ServerStatus_Offline"));
             }
             else
             {
-                ChangeTextBlockContent(mainWindow.ServerStatus, LanguageManager.GetLocalizedString("ServerStatus_Title") + LanguageManager.GetLocalizedString("ServerStatus_Online"));
+                ChangeTextBlockContent(_mainWindow.ServerStatus, LanguageManager.GetLocalizedString("ServerStatus_Title") + LanguageManager.GetLocalizedString("ServerStatus_Online"));
             }
         }
-
-        public static void UpdateMaintenanceInfo(int type)
+        
+        public static void UpdateMaintenanceInfo(MaintenanceInfo maintenanceInfo)
         {
-            if (type == 0)
+            switch (maintenanceInfo.ShardStatus)
             {
-                // Maintenance Ongoing
-                ChangeTextBlockContent(mainWindow.MaintenanceInfo, LanguageManager.GetLocalizedString("Message_Content_Ongoing") + '\n' + days + " " + LanguageManager.GetLocalizedString("days") + " " + hours + " " + LanguageManager.GetLocalizedString("hours")  + " " + minutes + " " + LanguageManager.GetLocalizedString("minutes") + " " + seconds + " " + LanguageManager.GetLocalizedString("seconds"));
+                case Enums.ShardStatus.Maintenance:
+                    ChangeTextBlockContent(_mainWindow.MaintenanceInfo, LanguageManager.GetLocalizedString("Message_Content_Ongoing") + '\n' + maintenanceInfo.Days + " " + LanguageManager.GetLocalizedString("maintenanceInfo.Days") + " " + maintenanceInfo.Hours + " " + LanguageManager.GetLocalizedString("maintenanceInfo.Hours")  + " " + maintenanceInfo.Minutes + " " + LanguageManager.GetLocalizedString("maintenanceInfo.Minutes") + " " + maintenanceInfo.Seconds + " " + LanguageManager.GetLocalizedString("maintenanceInfo.Seconds"));
+                    break;
+                    
+                case Enums.ShardStatus.WaitingForMaintenance:
+                    ChangeTextBlockContent(_mainWindow.MaintenanceInfo, LanguageManager.GetLocalizedString("Message_Content") + '\n' + maintenanceInfo.Days + " " + LanguageManager.GetLocalizedString("maintenanceInfo.Days") + " " + maintenanceInfo.Hours + " " + LanguageManager.GetLocalizedString("maintenanceInfo.Hours")  + " " + maintenanceInfo.Minutes + " " + LanguageManager.GetLocalizedString("maintenanceInfo.Minutes") + " " + maintenanceInfo.Seconds + " " + LanguageManager.GetLocalizedString("maintenanceInfo.Seconds"));
+                    break;
+                
+                case Enums.ShardStatus.MaintenanceEnded:
+                    ChangeTextBlockContent(_mainWindow.MaintenanceInfo, LanguageManager.GetLocalizedString("Maintenance_Ended"));
+                    break;
+                
+                case Enums.ShardStatus.Up:
+                    ChangeTextBlockContent(_mainWindow.MaintenanceInfo, LanguageManager.GetLocalizedString("No_Message"));
+                    break;
             }
-            else if (type == 1)
+        }
+        
+        public static async Task<string> GetFormattedUpcomingEvents()
+        {
+            ICalendar calendar = new Calendar();
+            var eventInfos = await calendar.GetUpcomingEvents();
+
+            StringBuilder formattedMessage = new StringBuilder();
+
+            if (eventInfos != null && eventInfos.Any())
             {
-                // Maintenance will start
-                ChangeTextBlockContent(mainWindow.MaintenanceInfo, LanguageManager.GetLocalizedString("Message_Content") + '\n' + days + " " + LanguageManager.GetLocalizedString("days") + " " + hours + " " + LanguageManager.GetLocalizedString("hours")  + " " + minutes + " " + LanguageManager.GetLocalizedString("minutes") + " " + seconds + " " + LanguageManager.GetLocalizedString("seconds"));
-            }
-            else if (type == 2)
-            {
-                // Maintenance ended
-                ChangeTextBlockContent(mainWindow.MaintenanceInfo, LanguageManager.GetLocalizedString("Maintenance_Ended"));
-            }
-            else if (type == 3)
-            {
-                // No events currently
-                ChangeTextBlockContent(mainWindow.MaintenanceInfo, LanguageManager.GetLocalizedString("No_Message"));
+                foreach (var eventInfo in eventInfos)
+                {
+                    formattedMessage.AppendLine($"Event: {eventInfo.Summary} \nStart Date: {eventInfo.StartDate}  End Date: {eventInfo.EndDate}");
+
+                    if (!string.IsNullOrEmpty(eventInfo.TimeTillStart))
+                    {
+                        formattedMessage.AppendLine($"Event Start: {eventInfo.TimeTillStart}");
+                    }
+
+                    if (!string.IsNullOrEmpty(eventInfo.TimeTillEnd))
+                    {
+                        formattedMessage.AppendLine($"Event End: {eventInfo.TimeTillEnd}");
+                    }
+
+                    formattedMessage.AppendLine();
+                }
             }
             else
             {
-                // etc
-                ChangeTextBlockContent(mainWindow.MaintenanceInfo, "Other events are not support at this time.");
+                formattedMessage.AppendLine("No upcoming events found.");
             }
+
+            return formattedMessage.ToString();
         }
     }
 }

@@ -39,8 +39,7 @@ namespace StarTrekOnline_ServerStatus
                     string html = await response.Content.ReadAsStringAsync();
                     HtmlDocument htmlDoc = new HtmlDocument();
                     htmlDoc.LoadHtml(html);
-
-                    // Specify the XPath to select the news content elements containing titles and image URLs.
+                    
                     string newsXPath = "//div[contains(@class, 'news-content') and contains(@class, 'element')]";
                     HtmlNodeCollection newsNodes = htmlDoc.DocumentNode.SelectNodes(newsXPath);
 
@@ -67,7 +66,7 @@ namespace StarTrekOnline_ServerStatus
             catch (HttpRequestException e)
             {
                 Logger.Error($"Request error: {e.Message}");
-                GetNewsContents();
+                await GetNewsContents();
                 throw;
             }
 

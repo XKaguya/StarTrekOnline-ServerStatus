@@ -9,6 +9,8 @@ namespace StarTrekOnline_ServerStatus.Utils.API
     {
         private static RichTextBox logRichTextBox;
 
+        private static int MAX_LOG_COUNT { get; set; } = 180;
+
         public static string LogLevel { get; set; } = "Info";
 
         static Logger()
@@ -32,6 +34,11 @@ namespace StarTrekOnline_ServerStatus.Utils.API
         {
             logRichTextBox = richTextBox;
         }
+
+        public static void SetLogLineLimit(int num)
+        {
+            MAX_LOG_COUNT = num;
+        }
         
         public static void SetLogBackgroundColor(SolidColorBrush color)
         {
@@ -42,10 +49,16 @@ namespace StarTrekOnline_ServerStatus.Utils.API
         {
             if (logRichTextBox != null)
             {
+                if (logRichTextBox.Document.Blocks.Count > MAX_LOG_COUNT)
+                {
+                    ClearLog();
+                }
+        
                 string logMessage = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} [INFO]: {message}";
                 LogAddLine(logMessage, Brushes.CornflowerBlue);
             }
         }
+
 
         public static void Error(string message)
         {
@@ -75,6 +88,10 @@ namespace StarTrekOnline_ServerStatus.Utils.API
 
             logRichTextBox.Document.Blocks.Add(paragraph);
         }
+        
+        public static void ClearLog()
+        {
+            logRichTextBox.Document.Blocks.Clear();
+        }
     }
-
 }
