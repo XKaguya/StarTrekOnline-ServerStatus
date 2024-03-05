@@ -9,59 +9,78 @@ namespace StarTrekOnline_ServerStatus
 {
     public interface IServerStatus
     {
-        Task<(int, int, int, int, int)> CheckServer(bool debug);
+        Task<API.MaintenanceInfo> CheckServerAsync(bool debug);
     }
-    
+
     public class ServerStatus : IServerStatus
     {
-        public async Task<(int, int, int, int, int)> CheckServer(bool debug)
+        public async Task<API.MaintenanceInfo> CheckServerAsync(bool debug)
         {
             try
             {
-                string message = await GetMaintenanceTime(debug);
-                if (!string.IsNullOrEmpty(message))
+                string message = await GetMaintenanceTimeAsync(debug);
+                if (!string.IsNullOrEmpty(message) && message.Contains("maintenance"))
                 {
-                    if (message.Contains("maintenance"))
-                    {
-                        var times = await ExtractTimes(message);
-                        var (startEventTime, endEventTime) = await TimeUntilEvent(times);
-                        DateTime currentTime = DateTime.UtcNow;
+                    var times = ExtractTimes(message);
+                    var (startEventTime, endEventTime) = TimeUntilEvent(times);
+                    DateTime currentTime = DateTime.UtcNow;
 
-                        if (startEventTime <= currentTime && currentTime <= endEventTime)
+                    if (startEventTime <= currentTime && currentTime <= endEventTime)
+                    {
+                        TimeSpan remainingTime = endEventTime.Value - currentTime;
+                        return new API.MaintenanceInfo
                         {
-                            TimeSpan remainingTime = endEventTime - currentTime;
-                            var (days, hours, minutes, seconds) = FormatTimeDifference(remainingTime);
-                            return (0, days, hours, minutes, seconds);
-                        }
-                        else if (currentTime < startEventTime)
+                            ShardStatus = Enums.ShardStatus.Maintenance,
+                            Days = remainingTime.Days,
+                            Hours = remainingTime.Hours,
+                            Minutes = remainingTime.Minutes,
+                            Seconds = remainingTime.Seconds
+                        };
+                    }
+                    else if (currentTime < startEventTime)
+                    {
+                        TimeSpan remainingTime = startEventTime.Value - currentTime;
+                        return new API.MaintenanceInfo
                         {
-                            TimeSpan remainingTime = startEventTime - currentTime;
-                            var (days, hours, minutes, seconds) = FormatTimeDifference(remainingTime);
-                            return (1, days, hours, minutes, seconds);
-                        }
-                        else
-                        {
-                            return (2, 0, 0, 0, 0);
-                        }
+                            ShardStatus = Enums.ShardStatus.WaitingForMaintenance,
+                            Days = remainingTime.Days,
+                            Hours = remainingTime.Hours,
+                            Minutes = remainingTime.Minutes,
+                            Seconds = remainingTime.Seconds
+                        };
                     }
                     else
                     {
-                        return (3, 0, 0, 0, 0);
+                        return new API.MaintenanceInfo
+                        {
+                            ShardStatus = Enums.ShardStatus.MaintenanceEnded,
+                            Days = 0,
+                            Hours = 0,
+                            Minutes = 0,
+                            Seconds = 0
+                        };
                     }
                 }
                 else
                 {
-                    return (-1, 0, 0, 0, 0);
+                    return new API.MaintenanceInfo
+                    {
+                        ShardStatus = Enums.ShardStatus.Up,
+                        Days = 0,
+                        Hours = 0,
+                        Minutes = 0,
+                        Seconds = 0
+                    };
                 }
             }
             catch (Exception e)
             {
-                Logger.Error(e.Message + e.StackTrace);
+                Logger.Error($"An error occurred while checking server status. {e.Message + e.StackTrace}");
                 throw;
             }
         }
-
-        private async Task<string> GetMaintenanceTime(bool debug)
+        
+        private async Task<string?> GetMaintenanceTimeAsync(bool debug)
         {
             if (debug)
             {
@@ -85,7 +104,7 @@ namespace StarTrekOnline_ServerStatus
             }
         }
 
-        public static async Task<(string, string, string)> ExtractTimes(string message)
+        private static (string?, string?, string?) ExtractTimes(string message)
         {
             string datePattern = @"(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{1,2})";
             Match dateMatch = Regex.Match(message, datePattern);
@@ -102,27 +121,23 @@ namespace StarTrekOnline_ServerStatus
                     return (month, day, utcTimeRange);
                 }
             }
+            
             return (null, null, null);
         }
 
-        private async Task<(DateTime, DateTime)> TimeUntilEvent((string, string, string) times)
+        private (DateTime?, DateTime?) TimeUntilEvent((string?, string?, string?) times)
         {
+            if (times.Item3 == null || times.Item2 == null || times.Item1 == null)
+            {
+                return (null, null);
+            }
+            
             string[] timeRange = times.Item3.Split('-');
 
             DateTime startTime = DateTime.ParseExact(timeRange[0], "H:mm", CultureInfo.InvariantCulture);
             DateTime endTime = DateTime.ParseExact(timeRange[1], "H:mm", CultureInfo.InvariantCulture);
             
             return (startTime, endTime);
-        }
-
-        private (int, int, int, int) FormatTimeDifference(TimeSpan timeDifference)
-        {
-            int days = timeDifference.Days;
-            int hours = timeDifference.Hours;
-            int minutes = timeDifference.Minutes;
-            int seconds = timeDifference.Seconds;
-
-            return (days, hours, minutes, seconds);
         }
     }
 }

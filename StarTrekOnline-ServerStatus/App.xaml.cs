@@ -23,24 +23,26 @@ namespace StarTrekOnline_ServerStatus
                 if (command == "--sS")
                 {
                     IServerStatus serverStatus = new ServerStatus();
-                    (API.StatusCode, API.days, API.hours, API.minutes, API.seconds) =
-                        await serverStatus.CheckServer(false);
+                    
+                    API.MaintenanceInfo maintenanceInfo = new();
+                
+                    maintenanceInfo = await serverStatus.CheckServerAsync(SetWindow.Instance.Debug_Mode);
 
                     INewsProcessor newsProcessor = new NewsProcessor();
                     var newsContents = await newsProcessor.GetNewsContents();
 
                     var combinedData = new
                     {
-                        StatusCode = API.StatusCode,
-                        Days = API.days,
-                        Hours = API.hours,
-                        Minutes = API.minutes,
-                        Seconds = API.seconds,
-                        NewsContents = newsContents
+                        maintenanceInfo.ShardStatus,
+                        maintenanceInfo.Days,
+                        maintenanceInfo.Hours,
+                        maintenanceInfo.Minutes,
+                        maintenanceInfo.Seconds,
+                        NewsContents = newsContents,
                     };
 
-                    string combined_json = JsonConvert.SerializeObject(combinedData);
-                    Console.WriteLine(combined_json);
+                    string combinedjson = JsonConvert.SerializeObject(combinedData);
+                    Console.WriteLine(combinedjson);
 
                     Environment.Exit(0);
                 }

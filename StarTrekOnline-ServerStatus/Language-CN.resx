@@ -43,7 +43,7 @@
         <value>维护已开始，将在以下时间后结束： </value>
     </data>
     <data name="No_Message">
-        <value>近期没有任何事件。</value>
+        <value>近期没有任何维护。</value>
     </data>
     <data name="Maintenance_Ended">
         <value>维护已结束。</value>

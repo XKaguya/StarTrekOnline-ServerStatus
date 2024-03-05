@@ -16,12 +16,21 @@ namespace StarTrekOnline_ServerStatus
 {
     public interface ICalendar
     {
-        Task<string> GetUpcomingEvents();
+        Task<List<EventInfo>> GetUpcomingEvents();
+    }
+    
+    public class EventInfo
+    {
+        public string? StartDate { get; set; }
+        public string? EndDate { get; set; }
+        public string? Summary { get; set; }
+        public string? TimeTillStart { get; set; }
+        public string? TimeTillEnd { get; set; }
     }
 
     public class Calendar : ICalendar
     {
-        public async Task<string> GetUpcomingEvents()
+        public async Task<List<EventInfo>> GetUpcomingEvents()
         {
             try
             {
@@ -46,8 +55,7 @@ namespace StarTrekOnline_ServerStatus
                     ApplicationName = "STO Server Checker"
                 });
 
-                EventsResource.ListRequest request =
-                    service.Events.List("uhio1bvtudq50n2qhfeo98iduo@group.calendar.google.com");
+                EventsResource.ListRequest request = service.Events.List("uhio1bvtudq50n2qhfeo98iduo@group.calendar.google.com");
                 request.TimeMin = DateTime.UtcNow;
                 request.ShowDeleted = false;
                 request.SingleEvents = true;
@@ -63,9 +71,12 @@ namespace StarTrekOnline_ServerStatus
                 }
                 else
                 {
-                    string logs = "";
+                    List<EventInfo> eventInfos = new List<EventInfo>();
+
                     foreach (var eventItem in events.Items)
                     {
+                        EventInfo eventInfo = new EventInfo();
+
                         string start = "";
                         string end = "";
                         string timeTillEnd = "";
@@ -107,30 +118,22 @@ namespace StarTrekOnline_ServerStatus
                             start = eventItem.Start.Date;
                             end = "All-Day Event";
                         }
-
-                        logs += $"{start} - {end} - {eventItem.Summary}";
-                        if (!string.IsNullOrEmpty(timeTillStart))
-                        {
-                            logs += $"- Event Start: {timeTillStart}";
-                        }
-
-                        if (!string.IsNullOrEmpty(timeTillEnd))
-                        {
-                            logs += $" - Event End: {timeTillEnd}\n";
-                        }
-                        else
-                        {
-                            logs += "\n";
-                        }
+                        eventInfo.StartDate = start;
+                        eventInfo.EndDate = end;
+                        eventInfo.Summary = eventItem.Summary;
+                        eventInfo.TimeTillStart = timeTillStart;
+                        eventInfo.TimeTillEnd = timeTillEnd;
+                        
+                        eventInfos.Add(eventInfo);
                     }
 
-                    return logs;
+                    return eventInfos;
                 }
             }
             catch (Exception ex)
             {
                 Logger.Error($"{ex.Message}, {ex.StackTrace}");
-                GetUpcomingEvents();
+                await GetUpcomingEvents();
                 throw;
             }
         }

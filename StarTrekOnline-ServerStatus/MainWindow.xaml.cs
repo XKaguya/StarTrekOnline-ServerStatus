@@ -57,7 +57,7 @@ namespace StarTrekOnline_ServerStatus
         public async void GetRecentNews()
         {
             ICalendar calendar = new Calendar();
-            var message = await calendar.GetUpcomingEvents();
+            var message = await API.GetFormattedUpcomingEvents();
 
             API.ChangeTextBlockContent(Recent_Events_Info, message);
         }
@@ -106,9 +106,9 @@ namespace StarTrekOnline_ServerStatus
             await server.StartServerAsync();
         }
         
-        private void Timer_Tick(object sender, EventArgs e)
+        private async void Timer_Tick(object sender, EventArgs e)
         {
-            CheckServer();
+            await CheckServer();
         }
         
         private async Task<string> GetNewsUrlFromStackPanel(StackPanel stackPanel)
@@ -246,38 +246,25 @@ namespace StarTrekOnline_ServerStatus
         {
             IServerStatus serverStatus = new ServerStatus();
             
-            (API.StatusCode, API.days, API.hours, API.minutes, API.seconds) = await serverStatus.CheckServer(setWindow.Debug_Mode);
+            API.MaintenanceInfo maintenanceInfo = new();
+                
+            maintenanceInfo = await serverStatus.CheckServerAsync(SetWindow.Instance.Debug_Mode);
+            
+            API.UpdateServerStatus(maintenanceInfo.ShardStatus);
+            API.UpdateMaintenanceInfo(maintenanceInfo);
 
-            switch (API.StatusCode)
+            switch (maintenanceInfo.ShardStatus)
             {
                 // Server starting / started maintenance.
-                case 0:
-                    API.UpdateServerStatus();
-                    API.UpdateMaintenanceInfo(0);
+                case Enums.ShardStatus.Maintenance:
                     PlayAudioNot_Start();
                     isPlayed_End = false;
                     playedTime = 0;
                     break;
-                
-                // Server will start maintenance.
-                case 1:
-                    API.UpdateServerStatus();
-                    API.UpdateMaintenanceInfo(1);
-                    break;
-                
-                // Server maintenance ended.
-                case 2:
-                    API.UpdateServerStatus();
-                    API.UpdateMaintenanceInfo(2);
+                case Enums.ShardStatus.MaintenanceEnded:
                     PlayAudioNot_End();
                     isPlayed_Start = false;
                     playedTime++;
-                    break;
-                
-                // Not support events.
-                case 3:
-                    API.UpdateServerStatus();
-                    API.UpdateMaintenanceInfo(3);
                     break;
                 default:
                     break;
