@@ -46,6 +46,15 @@ namespace StarTrekOnline_ServerStatus
 
                     Environment.Exit(0);
                 }
+
+                if (command == "--pS")
+                {
+                    CurrentMainWindow = new MainWindow();
+                    CurrentMainWindow.Show();
+
+                    var server = new NamedPipeServerHandler("STOChecker");
+                    await server.StartServerAsync();
+                }    
             }
             else
             {
