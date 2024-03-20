@@ -17,5 +17,5 @@ Recent events, maintenance info, server status and etc.
 
 # TODO
 Rewrite IServerStatus
-## Due to recent performence about wrong server status. It's seems that it's needed to rewrite the ServerStatus interface
+-- Due to recent performence about wrong server status. It's seems that it's needed to rewrite the ServerStatus interface
 
