@@ -14,3 +14,9 @@ Recent events, maintenance info, server status and etc.
 ![image](https://github.com/XKaguya/StarTrekOnline-ServerStatus/assets/96401952/76ec698e-f3ed-4305-adc7-6c9782616e3c)
 
 4. All done. Enjoy.
+
+# TODO
+Rewrite IServerStatus
+
+* Due to recent performence about wrong server status. It's seems that it's needed to rewrite the ServerStatus interface
+
