@@ -50,42 +50,67 @@ namespace StarTrekOnline_ServerStatus.Utils.API
 
             Logger.Log($"Received message from client: {receivedMessage}");
 
-            if (receivedMessage == "sS")
+            if (receivedMessage == "cL")
             {
-                IServerStatus serverStatus = new ServerStatus();
-                API.MaintenanceInfo maintenanceInfo = new();
-                
-                maintenanceInfo = await serverStatus.CheckServerAsync(SetWindow.Instance.Debug_Mode);
+                await ClientCheckServerAlive(pipeServer);
+            }
+            else if (receivedMessage == "sS")
+            {
+                await ClientAskForData(pipeServer);
+            }
+        }
 
-                INewsProcessor newsProcessor = new NewsProcessor();
-                var newsContents = await newsProcessor.GetNewsContents();
-                
-                ICalendar calendar = new Calendar();
-                var recentNews = await calendar.GetUpcomingEvents();
+        private static async Task ClientCheckServerAlive(PipeStream pipeServer)
+        {
+            if (pipeServer.IsConnected && pipeServer.CanWrite)
+            {
+                Logger.Log("Client awaiting for response. Sending now...");
 
-                var combinedData = new
-                {
-                    maintenanceInfo.ShardStatus,
-                    maintenanceInfo.Days,
-                    maintenanceInfo.Hours,
-                    maintenanceInfo.Minutes,
-                    maintenanceInfo.Seconds,
-                    NewsContents = newsContents,
-                    RecentNews = recentNews
-                };
+                byte[] messageBytes = Encoding.UTF8.GetBytes("Success");
+                await pipeServer.WriteAsync(messageBytes);
+            }
+            else
+            {
+                Logger.Error("Client cant write.");
+            }
+        }
+        private static async Task ClientAskForData(PipeStream pipeServer)
+        {
+            /*IServerStatus serverStatus = new ServerStatus();*/
+            IServerStatusRemastered serverStatus = new ServerStatusRemastered();
+            API.MaintenanceInfo maintenanceInfo = new();
 
-                string combinedJson = JsonConvert.SerializeObject(combinedData);
-                byte[] messageBytes = Encoding.UTF8.GetBytes(combinedJson);
+            /*maintenanceInfo = await serverStatus.CheckServerAsync(SetWindow.Instance.Debug_Mode);*/
+            maintenanceInfo = await serverStatus.CheckServerAsync();
 
-                if (pipeServer.IsConnected && pipeServer.CanWrite)
-                {
-                    Logger.Log("Client is connected and writeable. Trying to write data though pipe.");
-                    await pipeServer.WriteAsync(messageBytes);
-                }
-                else
-                {
-                    Logger.Error("Client cant write.");
-                }
+            INewsProcessor newsProcessor = new NewsProcessor();
+            var newsContents = await newsProcessor.GetNewsContents();
+
+            ICalendar calendar = new Calendar();
+            var recentNews = await calendar.GetUpcomingEvents();
+
+            var combinedData = new
+            {
+                maintenanceInfo.ShardStatus,
+                maintenanceInfo.Days,
+                maintenanceInfo.Hours,
+                maintenanceInfo.Minutes,
+                maintenanceInfo.Seconds,
+                NewsContents = newsContents,
+                RecentNews = recentNews
+            };
+
+            string combinedJson = JsonConvert.SerializeObject(combinedData);
+            byte[] messageBytes = Encoding.UTF8.GetBytes(combinedJson);
+
+            if (pipeServer.IsConnected && pipeServer.CanWrite)
+            {
+                Logger.Log("Client is connected and writeable. Trying to write data though pipe.");
+                await pipeServer.WriteAsync(messageBytes);
+            }
+            else
+            {
+                Logger.Error("Client cant write.");
             }
         }
     }

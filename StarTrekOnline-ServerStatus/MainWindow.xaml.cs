@@ -42,7 +42,7 @@ namespace StarTrekOnline_ServerStatus
 
         public void Init()
         {
-            Logger.SetLogLevel("Debug");
+            Logger.SetLogLevel("Info");
             CheckServer();
             UpdateNews();
             GetRecentNews();
@@ -244,30 +244,43 @@ namespace StarTrekOnline_ServerStatus
 
         private async Task CheckServer()
         {
-            IServerStatus serverStatus = new ServerStatus();
-            
-            API.MaintenanceInfo maintenanceInfo = new();
-                
-            maintenanceInfo = await serverStatus.CheckServerAsync(SetWindow.Instance.Debug_Mode);
-            
-            API.UpdateServerStatus(maintenanceInfo.ShardStatus);
-            API.UpdateMaintenanceInfo(maintenanceInfo);
-
-            switch (maintenanceInfo.ShardStatus)
+            try
             {
-                // Server starting / started maintenance.
-                case Enums.ShardStatus.Maintenance:
-                    PlayAudioNot_Start();
-                    isPlayed_End = false;
-                    playedTime = 0;
-                    break;
-                case Enums.ShardStatus.MaintenanceEnded:
-                    PlayAudioNot_End();
-                    isPlayed_Start = false;
-                    playedTime++;
-                    break;
-                default:
-                    break;
+                /*IServerStatus serverStatus = new ServerStatus();*/
+                IServerStatusRemastered serverStatus = new ServerStatusRemastered();
+            
+                API.MaintenanceInfo maintenanceInfo = new();
+                
+                /*maintenanceInfo = await serverStatus.CheckServerAsync(SetWindow.Instance.Debug_Mode);*/
+                maintenanceInfo = await serverStatus.CheckServerAsync();
+
+                if (App.CurrentMainWindow != null)
+                {
+                    API.UpdateServerStatus(maintenanceInfo.ShardStatus);
+                    API.UpdateMaintenanceInfo(maintenanceInfo);
+                }
+
+                switch (maintenanceInfo.ShardStatus)
+                {
+                    // Server starting / started maintenance.
+                    case Enums.MaintenanceTimeType.Maintenance:
+                        PlayAudioNot_Start();
+                        isPlayed_End = false;
+                        playedTime = 0;
+                        break;
+                    case Enums.MaintenanceTimeType.MaintenanceEnded:
+                        PlayAudioNot_End();
+                        isPlayed_Start = false;
+                        playedTime++;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex.Message + ex.StackTrace);
+                throw;
             }
         }
     }

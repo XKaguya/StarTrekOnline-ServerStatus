@@ -46,11 +46,15 @@ public partial class SetWindow : Window
     private void DebugChecked(object sender, RoutedEventArgs ev)
     {
         Debug_Mode = true;
+        
+        Logger.SetLogLevel("DEBUG");
     }
     
     private void DebugUnchecked(object sender, RoutedEventArgs ev)
     {
         Debug_Mode = false;
+        
+        Logger.SetLogLevel("INFO");
     }
     
     private void LanguageChanged(object sender, SelectionChangedEventArgs e)

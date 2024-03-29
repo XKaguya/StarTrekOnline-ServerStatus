@@ -1,9 +1,12 @@
+/*
 using System;
 using System.Globalization;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using HandyControl.Tools.Extension;
 using StarTrekOnline_ServerStatus.Utils.API;
+using static StarTrekOnline_ServerStatus.Utils.API.Enums;
 
 namespace StarTrekOnline_ServerStatus
 {
@@ -22,6 +25,16 @@ namespace StarTrekOnline_ServerStatus
                 if (!string.IsNullOrEmpty(message) && message.Contains("maintenance"))
                 {
                     var times = ExtractTimes(message);
+                    Enums.ShardStatus shardStatus;
+                    if (times.Item1 == null && times.Item2 == null && times.Item3 == null)
+                    {
+                        shardStatus = ExtractServerStatus(message, false);
+                    }
+                    else
+                    {
+                        shardStatus = ExtractServerStatus(message, true);
+                    }
+                    
                     var (startEventTime, endEventTime) = TimeUntilEvent(times);
                     DateTime currentTime = DateTime.UtcNow;
 
@@ -30,7 +43,7 @@ namespace StarTrekOnline_ServerStatus
                         TimeSpan remainingTime = endEventTime.Value - currentTime;
                         return new API.MaintenanceInfo
                         {
-                            ShardStatus = Enums.ShardStatus.Maintenance,
+                            ShardStatus = shardStatus,
                             Days = remainingTime.Days,
                             Hours = remainingTime.Hours,
                             Minutes = remainingTime.Minutes,
@@ -42,7 +55,7 @@ namespace StarTrekOnline_ServerStatus
                         TimeSpan remainingTime = startEventTime.Value - currentTime;
                         return new API.MaintenanceInfo
                         {
-                            ShardStatus = Enums.ShardStatus.WaitingForMaintenance,
+                            ShardStatus = shardStatus,
                             Days = remainingTime.Days,
                             Hours = remainingTime.Hours,
                             Minutes = remainingTime.Minutes,
@@ -53,7 +66,7 @@ namespace StarTrekOnline_ServerStatus
                     {
                         return new API.MaintenanceInfo
                         {
-                            ShardStatus = Enums.ShardStatus.MaintenanceEnded,
+                            ShardStatus = shardStatus,
                             Days = 0,
                             Hours = 0,
                             Minutes = 0,
@@ -139,5 +152,29 @@ namespace StarTrekOnline_ServerStatus
             
             return (startTime, endTime);
         }
+
+        private Enums.ShardStatus ExtractServerStatus(string message, bool isMaintenance)
+        {
+            string pattern = "\"server_status\"\\s*:\\s*\"(\\w+)\"";
+            Match match = Regex.Match(message, pattern);
+            if (match.Success)
+            {
+                if (match.Groups[1].Value == "up" && isMaintenance)
+                {
+                    return Enums.ShardStatus.MaintenanceEnded;
+                }
+                else if (match.Groups[1].Value == "up")
+                {
+                    return Enums.ShardStatus.Up;
+                }
+                else
+                {
+                    return Enums.ShardStatus.Maintenance;
+                }
+            }
+
+            return Enums.ShardStatus.None;
+        }
     }
 }
+*/

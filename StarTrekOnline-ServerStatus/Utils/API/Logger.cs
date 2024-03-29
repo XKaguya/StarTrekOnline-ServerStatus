@@ -9,7 +9,7 @@ namespace StarTrekOnline_ServerStatus.Utils.API
     {
         private static RichTextBox logRichTextBox;
 
-        private static int MAX_LOG_COUNT { get; set; } = 180;
+        private static int MAX_LOG_COUNT { get; set; } = 30;
 
         public static string LogLevel { get; set; } = "Info";
 
@@ -49,7 +49,7 @@ namespace StarTrekOnline_ServerStatus.Utils.API
         {
             if (logRichTextBox != null)
             {
-                if (logRichTextBox.Document.Blocks.Count > MAX_LOG_COUNT)
+                if (logRichTextBox.Document.Blocks.Count >= MAX_LOG_COUNT)
                 {
                     ClearLog();
                 }

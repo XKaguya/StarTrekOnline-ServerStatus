@@ -13,7 +13,7 @@ namespace StarTrekOnline_ServerStatus.Utils.API
 
         public class MaintenanceInfo
         {
-            public Enums.ShardStatus ShardStatus { get; set; }
+            public Enums.MaintenanceTimeType ShardStatus { get; set; }
 
             public int Days { get; set; }
 
@@ -22,6 +22,15 @@ namespace StarTrekOnline_ServerStatus.Utils.API
             public int Minutes { get; set; }
 
             public int Seconds { get; set; }
+
+            public override string ToString()
+            {
+                string shardStatusString = ShardStatus.ToString();
+
+                string timeString = $"{Days} days, {Hours} hours, {Minutes} minutes, {Seconds} seconds";
+
+                return $"Shard Status: {shardStatusString}, Maintenance Time: {timeString}";
+            }
         }
         
         public static async Task<bool> PlayAudioNotification(string path)
@@ -77,15 +86,27 @@ namespace StarTrekOnline_ServerStatus.Utils.API
             return false;
         }
         
-        public static void UpdateServerStatus(Enums.ShardStatus shardStatus)
+        public static void UpdateServerStatus(Enums.MaintenanceTimeType shardStatus)
         {
-            if (shardStatus == Enums.ShardStatus.Maintenance)
+            try
             {
-                ChangeTextBlockContent(_mainWindow.ServerStatus, LanguageManager.GetLocalizedString("ServerStatus_Title") + LanguageManager.GetLocalizedString("ServerStatus_Offline"));
+                if (shardStatus == Enums.MaintenanceTimeType.Maintenance)
+                {
+                    ChangeTextBlockContent(_mainWindow.ServerStatus, LanguageManager.GetLocalizedString("ServerStatus_Title") + LanguageManager.GetLocalizedString("ServerStatus_Offline"));
+                }
+                else if (shardStatus == Enums.MaintenanceTimeType.SpecialMaintenance)
+                {
+                    ChangeTextBlockContent(_mainWindow.ServerStatus, LanguageManager.GetLocalizedString("ServerStatus_Title") + LanguageManager.GetLocalizedString("ServerStatus_Offline"));
+                }
+                else
+                {
+                    ChangeTextBlockContent(_mainWindow.ServerStatus, LanguageManager.GetLocalizedString("ServerStatus_Title") + LanguageManager.GetLocalizedString("ServerStatus_Online"));
+                }
             }
-            else
+            catch (Exception ex)
             {
-                ChangeTextBlockContent(_mainWindow.ServerStatus, LanguageManager.GetLocalizedString("ServerStatus_Title") + LanguageManager.GetLocalizedString("ServerStatus_Online"));
+                Logger.Error(ex.Message + ex.StackTrace);
+                throw;
             }
         }
         
@@ -93,19 +114,23 @@ namespace StarTrekOnline_ServerStatus.Utils.API
         {
             switch (maintenanceInfo.ShardStatus)
             {
-                case Enums.ShardStatus.Maintenance:
+                case Enums.MaintenanceTimeType.Maintenance:
                     ChangeTextBlockContent(_mainWindow.MaintenanceInfo, LanguageManager.GetLocalizedString("Message_Content_Ongoing") + '\n' + maintenanceInfo.Days + " " + LanguageManager.GetLocalizedString("maintenanceInfo.Days") + " " + maintenanceInfo.Hours + " " + LanguageManager.GetLocalizedString("maintenanceInfo.Hours")  + " " + maintenanceInfo.Minutes + " " + LanguageManager.GetLocalizedString("maintenanceInfo.Minutes") + " " + maintenanceInfo.Seconds + " " + LanguageManager.GetLocalizedString("maintenanceInfo.Seconds"));
                     break;
                     
-                case Enums.ShardStatus.WaitingForMaintenance:
+                case Enums.MaintenanceTimeType.WaitingForMaintenance:
                     ChangeTextBlockContent(_mainWindow.MaintenanceInfo, LanguageManager.GetLocalizedString("Message_Content") + '\n' + maintenanceInfo.Days + " " + LanguageManager.GetLocalizedString("maintenanceInfo.Days") + " " + maintenanceInfo.Hours + " " + LanguageManager.GetLocalizedString("maintenanceInfo.Hours")  + " " + maintenanceInfo.Minutes + " " + LanguageManager.GetLocalizedString("maintenanceInfo.Minutes") + " " + maintenanceInfo.Seconds + " " + LanguageManager.GetLocalizedString("maintenanceInfo.Seconds"));
                     break;
                 
-                case Enums.ShardStatus.MaintenanceEnded:
+                case Enums.MaintenanceTimeType.MaintenanceEnded:
                     ChangeTextBlockContent(_mainWindow.MaintenanceInfo, LanguageManager.GetLocalizedString("Maintenance_Ended"));
                     break;
                 
-                case Enums.ShardStatus.Up:
+                case Enums.MaintenanceTimeType.SpecialMaintenance:
+                    ChangeTextBlockContent(_mainWindow.MaintenanceInfo, LanguageManager.GetLocalizedString("Maintenance_Ended"));
+                    break;
+                
+                case Enums.MaintenanceTimeType.None:
                     ChangeTextBlockContent(_mainWindow.MaintenanceInfo, LanguageManager.GetLocalizedString("No_Message"));
                     break;
             }
