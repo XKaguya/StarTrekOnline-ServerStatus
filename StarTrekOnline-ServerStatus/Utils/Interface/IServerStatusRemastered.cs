@@ -93,25 +93,25 @@ namespace StarTrekOnline_ServerStatus
                     
                     Logger.Debug($"{maintenanceInfo}");
                 }
-                else if (serverStatus == Enums.ShardStatus.None)
-                {
-                    Logger.Debug("Statement 4");
-                    
-                    maintenanceInfo.Days = 0;
-                    maintenanceInfo.Hours = 0;
-                    maintenanceInfo.Minutes = 0;
-                    maintenanceInfo.Seconds = 0;
-                    
-                    Logger.Debug($"{maintenanceInfo}");
-                }
                 else if (maintenanceType == Enums.MaintenanceTimeType.SpecialMaintenance)
                 {
-                    Logger.Debug("Statement 5");
+                    Logger.Debug("Statement 4");
                     
                     maintenanceInfo.Days = -1;
                     maintenanceInfo.Hours = -1;
                     maintenanceInfo.Minutes = -1;
                     maintenanceInfo.Seconds = -1;
+                    
+                    Logger.Debug($"{maintenanceInfo}");
+                }
+                else
+                {
+                    Logger.Debug("Statement 5");
+                    
+                    maintenanceInfo.Days = 0;
+                    maintenanceInfo.Hours = 0;
+                    maintenanceInfo.Minutes = 0;
+                    maintenanceInfo.Seconds = 0;
                     
                     Logger.Debug($"{maintenanceInfo}");
                 }
@@ -302,8 +302,7 @@ namespace StarTrekOnline_ServerStatus
                     return temp;
                 }
             }
-            
-            Logger.Error($"Method TryParseData failed to parse date.");
+
             return null;
         }
         
@@ -369,9 +368,10 @@ namespace StarTrekOnline_ServerStatus
 
                 return (parsedTime0, parsedTime1);
             }
-
-            Logger.Error($"Method TryParseTimeSpan failed to parse time.");
-            return (null, null);
+            else
+            {
+                return (null, null);
+            }
         }
     }
 }
