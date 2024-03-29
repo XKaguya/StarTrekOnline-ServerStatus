@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO.Pipes;
 using System.Text;
 using System.Threading.Tasks;
@@ -76,10 +76,12 @@ namespace StarTrekOnline_ServerStatus.Utils.API
         }
         private static async Task ClientAskForData(PipeStream pipeServer)
         {
-            IServerStatus serverStatus = new ServerStatus();
+            /*IServerStatus serverStatus = new ServerStatus();*/
+            IServerStatusRemastered serverStatus = new ServerStatusRemastered();
             API.MaintenanceInfo maintenanceInfo = new();
 
-            maintenanceInfo = await serverStatus.CheckServerAsync(SetWindow.Instance.Debug_Mode);
+            /*maintenanceInfo = await serverStatus.CheckServerAsync(SetWindow.Instance.Debug_Mode);*/
+            maintenanceInfo = await serverStatus.CheckServerAsync();
 
             INewsProcessor newsProcessor = new NewsProcessor();
             var newsContents = await newsProcessor.GetNewsContents();

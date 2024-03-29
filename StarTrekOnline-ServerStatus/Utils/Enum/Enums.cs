@@ -5,9 +5,16 @@
         public enum ShardStatus
         {
             Maintenance,
-            WaitingForMaintenance,
             Up,
+            None,
+        }
+
+        public enum MaintenanceTimeType
+        {
+            WaitingForMaintenance,
+            Maintenance,
             MaintenanceEnded,
+            SpecialMaintenance,
             None,
         }
     }

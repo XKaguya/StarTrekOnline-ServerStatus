@@ -22,11 +22,11 @@ namespace StarTrekOnline_ServerStatus
 
                 if (command == "--sS")
                 {
-                    IServerStatus serverStatus = new ServerStatus();
+                    IServerStatusRemastered serverStatus = new ServerStatusRemastered();
                     
                     API.MaintenanceInfo maintenanceInfo = new();
                 
-                    maintenanceInfo = await serverStatus.CheckServerAsync(SetWindow.Instance.Debug_Mode);
+                    maintenanceInfo = await serverStatus.CheckServerAsync();
 
                     INewsProcessor newsProcessor = new NewsProcessor();
                     var newsContents = await newsProcessor.GetNewsContents();
