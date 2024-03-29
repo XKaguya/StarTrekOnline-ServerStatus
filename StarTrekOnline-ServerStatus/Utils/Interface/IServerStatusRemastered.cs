@@ -104,7 +104,7 @@ namespace StarTrekOnline_ServerStatus
                     
                     Logger.Debug($"{maintenanceInfo}");
                 }
-                else
+                else if (maintenanceType == Enums.MaintenanceTimeType.None)
                 {
                     Logger.Debug("Statement 5");
                     
