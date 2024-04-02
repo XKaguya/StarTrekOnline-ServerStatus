@@ -147,8 +147,13 @@ namespace StarTrekOnline_ServerStatus
             return Enums.MaintenanceTimeType.None;
         }
         
-        private Enums.ShardStatus ExtractServerStatus(string message)
+        private Enums.ShardStatus ExtractServerStatus(string? message)
         {
+            if (message == null)
+            {
+                return Enums.ShardStatus.None;
+            }
+            
             string pattern = "\"server_status\"\\s*:\\s*\"(\\w+)\"";
             Match match = Regex.Match(message, pattern);
             if (match.Success)
@@ -291,8 +296,13 @@ namespace StarTrekOnline_ServerStatus
             }
         }
         
-        private DateTime? TryParseDate(string input, string pattern)
+        private DateTime? TryParseDate(string? input, string pattern)
         {
+            if (input == null)
+            {
+                return null;
+            }
+            
             Match match = Regex.Match(input, pattern);
             if (match.Success)
             {
@@ -313,8 +323,13 @@ namespace StarTrekOnline_ServerStatus
         /// <param name="input"></param>
         /// <param name="pattern"></param>
         /// <returns>TimeSpan or null if failed.</returns>
-        private (TimeSpan?, TimeSpan?) TryParseTimeSpan(string input, string pattern)
+        private (TimeSpan?, TimeSpan?) TryParseTimeSpan(string? input, string pattern)
         {
+            if (input == null)
+            {
+                return (null, null);
+            }
+            
             Match match = Regex.Match(input, pattern);
             if (match.Success)
             {

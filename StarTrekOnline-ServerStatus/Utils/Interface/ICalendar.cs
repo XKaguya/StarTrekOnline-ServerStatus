@@ -30,6 +30,9 @@ namespace StarTrekOnline_ServerStatus
 
     public class Calendar : ICalendar
     {
+        private const int MaxRetryCount = 3;
+        
+        private int retryCount = 0;
         public async Task<List<EventInfo>> GetUpcomingEvents()
         {
             try
@@ -133,8 +136,16 @@ namespace StarTrekOnline_ServerStatus
             catch (Exception ex)
             {
                 Logger.Error($"{ex.Message}, {ex.StackTrace}");
-                await GetUpcomingEvents();
-                throw;
+                if (retryCount < MaxRetryCount)
+                {
+                    retryCount++;
+                    await Task.Delay(1000);
+                    return await GetUpcomingEvents();
+                }
+                else
+                {
+                    return null;
+                }
             }
         }
     }
