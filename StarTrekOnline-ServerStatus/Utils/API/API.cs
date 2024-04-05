@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -168,6 +169,30 @@ namespace StarTrekOnline_ServerStatus.Utils.API
             }
 
             return formattedMessage.ToString();
+        }
+
+        public static string? GetDebugMessage()
+        {
+            string filePath = Directory.GetCurrentDirectory();
+            string msgPath = Path.Combine(filePath, "debug.json");
+
+            if (File.Exists(msgPath))
+            {
+                try
+                {
+                    string fileContent = File.ReadAllText(msgPath);
+                    return fileContent;
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error("An error occurred while reading debug.json file: " + ex.Message);
+                    return null;
+                }
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }
